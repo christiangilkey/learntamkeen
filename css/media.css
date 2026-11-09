@@ -1,0 +1,497 @@
+/* Media import: the Trending podcasts page, the YouTube box in the Library, and the YouTube
+   player. Kept apart from app.css; uses the same colour tokens. Shared with the Android app. */
+
+/* ---------- rows that scroll sideways (web/js/scrollhint.js) ----------
+   While a row has more than fits, the edge with more beyond it fades out; the fade goes once the
+   row is scrolled to that end. (The peek and the first-time nudge are done by the script.) */
+.hs-more { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 44px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 44px), transparent); }
+.hs-back { -webkit-mask-image: linear-gradient(to right, transparent, #000 32px); mask-image: linear-gradient(to right, transparent, #000 32px); }
+.hs-back.hs-more {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 32px, #000 calc(100% - 44px), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 32px, #000 calc(100% - 44px), transparent);
+}
+
+/* ---------- library ---------- */
+.feed-list[hidden] { display: none; } /* the podcast / channel list, only under Podcasts and YouTube */
+
+/* One header row that stays at the top while the list scrolls: the kinds (phone), the status pills
+   and the title filter, then ticking several at once. The same on every kind. */
+.lib-bar { position: sticky; top: -16px; z-index: 5; background: var(--bg); padding: 4px 0 2px; margin-bottom: 8px; border-bottom: 1px solid var(--border); }
+.lib-bar .filter-row { display: flex; align-items: center; gap: 10px; }
+.lib-bar .tabs { flex: 1 1 auto; min-width: 0; margin: 6px 0; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+.lib-bar .tabs::-webkit-scrollbar { display: none; }
+.lib-bar .tabs button { flex: none; white-space: nowrap; }
+.lib-bar #title-filter { flex: 0 1 220px; min-width: 120px; }
+.lib-bar .toolbar { position: static; padding: 4px 0 6px; background: none; }
+.library.desk .lib-bar .tabs { flex-wrap: wrap; overflow: visible; } /* the computer has room for every pill */
+.library .lib-main.empty-kind .lib-bar .tabs, .library .lib-main.empty-kind .lib-bar .toolbar { display: flex; }
+.lib-main { padding-bottom: 104px; } /* the last row never sits under the + button */
+
+/* The round + button: every way of adding something (components/addsheet.js). */
+.add-fab {
+  position: fixed; right: 28px; bottom: 28px; z-index: 30;
+  width: 58px; height: 58px; min-height: 0; padding: 0; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--accent); color: var(--accent-ink); border: 3px solid var(--bg);
+}
+.add-fab:hover:not(:disabled) { filter: brightness(1.08); background: var(--accent); }
+.library.courses-kind .add-fab { display: none; } /* Courses: nothing to add there (the owner) */
+.add-fab .ic { stroke-width: 2.2; }
+/* Swiping between sections on a phone (mobile/src/js/swipe.js): hidden while the page slides, then
+   it fades in rolling from the left once the new page has settled (or just fades back if the swipe
+   springs back). A 58 px circle travelling 120 px turns about 240 degrees, so it looks like rolling. */
+/* (gone at once, not faded: the sliding page moves where a fixed button sits, so during a fade it was seen to jump
+   up for a moment: the owner) */
+.page-swiping .add-fab { visibility: hidden; opacity: 0; transition: none; pointer-events: none; }
+.add-fab.roll-in { animation: fab-roll-in .6s cubic-bezier(.33, 1, .68, 1) both; }
+.add-fab.fade-in { animation: fab-fade-in .2s ease-out both; }
+@keyframes fab-roll-in {
+  from { opacity: 0; transform: translateX(-120px) rotate(-240deg); }
+  55% { opacity: 1; }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fab-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .add-fab.roll-in { animation: fab-fade-in .3s ease-out both; } }
+/* The computer's list of kinds: the chosen one's icon stays the text colour too (its row is highlighted). */
+.library.desk #feed-list .feed-item.active .ph.all { color: var(--text); }
+/* Messages pop up just above the + button instead of over it. */
+body:has(.add-fab) .toasts { bottom: 100px; }
+
+/* A kind with nothing in it (library.js emptyState): "Nothing here yet", what to add with the + button,
+   and a line-drawn arrow to the button. The button carries the arrow (.fab-hint), so the arrow is beside
+   it wherever it sits (computer, phone above the tab bar, any window size); library.js adds hint-flip
+   when the button is on the left half of the screen, and the arrow then comes from its other side.
+   It is hidden while a box is open over the page (the + sheet itself) or a page guide is showing. */
+.lib-empty { display: flex; flex-direction: column; align-items: center; gap: 6px; max-width: 440px; margin: 40px auto 24px; padding: 0 16px; text-align: center; }
+.lib-empty .le-icon { display: grid; place-items: center; width: 64px; height: 64px; margin-bottom: 6px; border-radius: 20px; background: var(--surface-2); color: var(--muted); }
+.lib-empty .le-title { margin: 0; font-size: 22px; }
+.lib-empty .le-text { margin: 0; font-size: 17px; line-height: 1.5; color: var(--muted); }
+.lib-empty .row { justify-content: center; }
+.lib-main.list-empty #lib-head { display: none; } /* (the empty state below says it all) */
+.fab-hint {
+  position: absolute; right: calc(100% + 6px); bottom: calc(50% - 14px); /* the arrow's tip, 82/96 down it, level with the button's middle */
+  width: 110px; height: 96px; color: var(--accent); pointer-events: none; display: none; transition: opacity .3s;
+}
+.fab-hint svg { display: block; width: 100%; height: 100%; }
+.library.lib-is-empty .fab-hint { display: block; }
+.add-fab.hint-flip .fab-hint { right: auto; left: calc(100% + 6px); transform: scaleX(-1); }
+.add-fab.roll-in .fab-hint, .add-fab.fade-in .fab-hint { opacity: 0; } /* (back once the button has rolled in) */
+body:has(.modal-back) .library .fab-hint, body:has(.tour) .library .fab-hint { display: none; }
+@media (max-width: 640px) { .fab-hint { width: 88px; height: 77px; bottom: calc(50% - 11px); } }
+button.fx-pop { display: inline-flex; } /* (an XP pop on a button keeps its icon beside its words) */
+.gx-say.fx-pop { display: inline-grid; }
+
+/* The sheet the + button opens: a plain list of the ways, then each way's own small form. */
+.add-sheet .modal-body { padding-top: 10px; }
+.add-ways { display: flex; flex-direction: column; gap: 8px; }
+.add-way {
+  display: flex; align-items: center; gap: 14px; width: 100%; padding: 12px 14px; min-height: 64px;
+  text-align: start; white-space: normal; border-radius: 14px; background: var(--surface-2); border: 1px solid transparent;
+}
+.add-way:hover { border-color: var(--accent); }
+/* The same plain line icons as the tab bar: the text colour (white in dark mode), no coloured tile. */
+.aw-ico { width: 36px; height: 36px; flex: none; display: grid; place-items: center; color: var(--text); }
+.aw-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; overflow-wrap: anywhere; }
+.aw-text strong { font-size: 16px; }
+.aw-text span { font-size: 13px; color: var(--muted); font-weight: 400; }
+.aw-go { flex: none; color: var(--muted); display: inline-flex; }
+.aw-back { margin: 0 0 10px -6px; padding-left: 6px; padding-right: 10px; }
+.aw-step { display: flex; flex-direction: column; gap: 12px; }
+.aw-form { display: flex; gap: 8px; }
+.aw-form input { flex: 1; min-width: 0; }
+.aw-wide { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; font-weight: 600; }
+.aw-or { text-align: center; color: var(--muted); font-size: 13px; }
+.aw-note { margin: 0; text-align: center; }
+/* Netflix where it can't play (the phones, the web app): why, on one plain surface. */
+.aw-unavailable { padding: 14px 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-2); text-align: center; }
+.aw-unavailable p { margin: 8px 0 0; }
+.aw-country { display: flex; align-items: center; gap: 8px; }
+.aw-country select { flex: 1; min-width: 0; }
+/* YouTube's topics (youtube-home.js TOPICS): plain tiles like the ways above, two or three across. */
+.yt-topics { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+.yt-topic {
+  display: flex; align-items: center; gap: 10px; min-height: 54px; padding: 8px 12px; min-width: 0;
+  text-align: start; white-space: normal; line-height: 1.25; font-weight: 600; font-size: 14px;
+  border-radius: 14px; background: var(--surface-2); border: 1px solid transparent; color: var(--text);
+}
+.yt-topic:hover:not(:disabled) { border-color: var(--accent); background: var(--surface-2); }
+.yt-topic span { min-width: 0; overflow-wrap: anywhere; }
+.yt-topic[data-topic="popular"] { grid-column: 1 / -1; justify-content: center; } /* the usual start, across the top; twelve topics fill the rows under it */
+
+/* ---------- audiobooks (audiobooks.js) ----------
+   The + sheet's Audiobook step: your own files (one plain card, with the Libro.fm line under it), then
+   LibriVox's books (cover, title, author, length, Add); and the Library's own shelf of them. */
+.ab-own { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; background: var(--surface-2); }
+.ab-own-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; overflow-wrap: anywhere; }
+.ab-own > button { flex: none; display: inline-flex; align-items: center; gap: 6px; }
+.ab-shop { margin-top: -4px; }
+.ab-free { display: flex; flex-direction: column; gap: 12px; margin-top: 6px; }
+.ab-head2 { margin: 0; font-size: 16px; }
+.ab-free > .aw-note:not(.ab-credit) { text-align: start; }
+@media (max-width: 480px) { .ab-own { flex-wrap: wrap; } .ab-own > button { width: 100%; justify-content: center; } }
+.ab-count { margin: 0; text-align: center; }
+.ab-name label { display: flex; flex-direction: column; gap: 6px; }
+.ab-name input { width: 100%; }
+.ab-list, .ab-shelf { display: flex; flex-direction: column; gap: 8px; }
+.ab-book, .ab-mine {
+  display: flex; align-items: center; gap: 12px; padding: 8px 10px; min-width: 0;
+  border-radius: 14px; background: var(--surface-2);
+}
+.ab-cover { width: 56px; height: 56px; flex: none; border-radius: 8px; object-fit: cover; background: var(--surface); }
+.ab-cover.ph { display: grid; place-items: center; color: var(--muted); }
+.ab-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ab-title { font-weight: 600; font-size: 15px; line-height: 1.3; overflow-wrap: anywhere; }
+.ab-author { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ab-act { flex: none; }
+.ab-more[hidden] { display: none; }
+.ab-credit { margin: 4px 0 0; text-align: center; }
+.ab-shelf { max-width: 760px; margin: 8px auto 0; }
+.ab-shelf .ab-credit { margin-top: 10px; }
+.ab-mine-open { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; color: var(--text); text-decoration: none; }
+.ab-mine-open:hover { text-decoration: none; }
+.ab-mine-open:hover .ab-title { color: var(--accent); }
+.ab-mine > .btn { flex: none; display: inline-flex; align-items: center; gap: 6px; }
+.ab-head .ab-author { margin: 2px 0 6px; }
+.ab-head .ab-go .btn { display: inline-flex; align-items: center; gap: 6px; }
+.ab-head .ab-credit { text-align: start; margin-top: 8px; }
+.ab-head .desc { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+/* The shelf of your audiobooks has no episode tools (each book's own page has them). */
+.library.shelf-kind .filter-row, .library.shelf-kind .toolbar, .library.shelf-kind #episodes, .library.shelf-kind #more { display: none; }
+.library.desk.shelf-kind .lib-bar { display: none; } /* (on the phone it holds the kinds, which stay) */
+
+/* The Web page screen (pages/websites.js, #/sites): paste an address, your saved sites, news. One
+   plain surface per tile, no shadows; the column is centred. */
+.sites-page { max-width: 1040px; }
+.sites-page.with-fab { padding-bottom: 104px; } /* the web app's round import button never covers the last sites */
+.sites-import { display: flex; gap: 8px; padding: 12px; margin: 8px 0 10px; }
+.sites-import input, .sites-search input { flex: 1; min-width: 0; }
+.sites-search { display: flex; gap: 8px; }
+.sites-search button { display: inline-flex; align-items: center; gap: 6px; }
+.sites-sec { margin-top: 22px; }
+.sites-sec-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; min-height: 40px; }
+.sites-sec-head h2 { margin: 0; font-size: 18px; }
+.sites-add { display: inline-flex; align-items: center; gap: 6px; flex: none; }
+.sites-empty { margin: 0; }
+.sites-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+.sites-grid:empty { display: none; }
+.site-tile { position: relative; min-width: 0; }
+.site-tile a {
+  display: flex; align-items: center; gap: 12px; min-width: 0; min-height: 64px; padding: 12px;
+  border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: inherit; text-decoration: none;
+}
+.site-tile a:hover, .site-tile a:focus-visible { border-color: var(--accent); outline: none; }
+.site-tile a:active { transform: scale(.98); }
+.site-tile.saved a { padding-inline-end: 50px; }
+.site-ico {
+  position: relative; width: 40px; height: 40px; flex: none; border-radius: 10px; overflow: hidden;
+  display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: 18px;
+}
+.site-ico img { position: absolute; inset: 0; width: 100%; height: 100%; padding: 6px; background: var(--surface); opacity: 0; transition: opacity .2s; }
+.site-ico img.on { opacity: 1; }
+.site-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.site-name, .site-note { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.site-name { font-weight: 600; font-size: 16px; line-height: 1.3; }
+.site-note { color: var(--muted); font-size: 13px; }
+.site-easy { display: inline-block; margin-inline-end: 4px; padding: 0 7px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); font-size: 11px; font-weight: 700; }
+.site-rm {
+  position: absolute; top: 50%; inset-inline-end: 8px; transform: translateY(-50%);
+  width: 36px; height: 36px; min-height: 0; padding: 0; border-radius: 50%; display: grid; place-items: center; color: var(--muted);
+}
+.site-rm:hover:not(:disabled) { color: var(--text); }
+.sites-add-form { display: flex; flex-direction: column; gap: 14px; }
+.sites-add-form label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 14px; }
+.sites-add-form input { font-weight: 400; }
+.sites-add-error { margin: 0; color: var(--danger); }
+.sites-add-form .confirm-buttons { margin-top: 4px; }
+.sites-add-form .confirm-buttons button { flex: 1 1 0; min-width: 0; padding-left: 12px; padding-right: 12px; } /* the pair exactly as wide */
+@media (max-width: 520px) {
+  .sites-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .site-tile a { gap: 8px; padding: 10px; min-height: 58px; }
+  .site-tile.saved a { padding-inline-end: 40px; }
+  .site-ico { width: 32px; height: 32px; font-size: 15px; }
+  .site-ico img { padding: 4px; }
+  .site-name { font-size: 15px; }
+  .site-rm { width: 32px; height: 32px; inset-inline-end: 4px; }
+}
+/* Followed YouTube channels: round pictures in the phone's bar, chips on the computer. */
+.feed-item img.round, .feed-item .ph.round, .lib-head .channel-pic { border-radius: 50%; }
+.feed-item .ph.round, .lib-head .ph.channel-pic { display: grid; place-items: center; font-weight: 700; font-size: 20px; color: var(--accent); background: var(--accent-soft); }
+.lib-head .channel-pic { width: 72px; height: 72px; object-fit: cover; flex: none; }
+.yt-channels { align-items: center; margin: 0 0 4px; }
+.yt-channels button { display: inline-flex; align-items: center; gap: 6px; max-width: 240px; }
+.yt-channels button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.yt-channels button img.round, .yt-channels button .ph.round { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; flex: none; font-size: 11px; display: inline-grid; place-items: center; background: var(--accent-soft); color: var(--accent); }
+
+/* ---------- trending podcasts ---------- */
+.discover { max-width: 1200px; }
+.disc-head { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 8px; }
+.disc-head .meta { flex: 1; min-width: 0; }
+.disc-head h1 { margin: 0 0 2px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.disc-rss { margin: 4px 0 8px; }
+.disc-cats { position: sticky; top: 0; z-index: 3; background: var(--bg); padding: 8px 0; margin: 0 0 4px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: thin; }
+.disc-cats button { flex: none; white-space: nowrap; }
+.disc-cat { margin-bottom: 22px; }
+.disc-cat h2 { margin: 10px 0 8px; font-size: 18px; }
+.disc-cat h2 .n { font-size: 13px; font-weight: 500; color: var(--muted); }
+.disc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
+.disc-card { display: flex; gap: 12px; align-items: center; padding: 10px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); min-width: 0; }
+.disc-card img, .disc-card .ph { width: 64px; height: 64px; border-radius: 10px; object-fit: cover; flex: none; background: var(--surface-2); }
+.disc-card .ph { display: grid; place-items: center; color: var(--muted); }
+.disc-card .info { flex: 1; min-width: 0; }
+.disc-card .t { font-weight: 600; line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.disc-card .a { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.disc-card .a:empty, .disc-card .d:empty { display: none; }
+.disc-card .d { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-top: 2px; }
+.disc-card .add { flex: none; min-width: 84px; }
+.disc-card .add.done { color: var(--accent); background: var(--accent-soft); border-color: transparent; opacity: 1; }
+.disc-more { margin-top: 8px; }
+.disc-msg { max-width: 560px; margin: 32px auto; text-align: center; }
+.disc-credit { margin-top: 24px; text-align: center; }
+@media (max-width: 640px) {
+  .disc-head { flex-wrap: wrap; }
+  .disc-grid { grid-template-columns: 1fr; }
+  .disc-card img, .disc-card .ph { width: 52px; height: 52px; }
+  .disc-card .d { display: none; }
+}
+
+/* ---------- YouTube player ----------
+   The clickable captions sit below the video, never on top of it: YouTube does not allow
+   anything to be drawn over its player. */
+.player.yt .yt-col { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; background: #000; }
+.player.yt .screen { flex: 1 1 auto; }
+.player.yt .screen iframe { width: 100%; height: 100%; border: 0; display: block; }
+.player.yt .captions {
+  position: static; transform: none; width: auto; max-width: none; flex: none;
+  border-radius: 0; background: #111; padding: .35em .8em; box-sizing: border-box;
+  min-height: calc(1.75em * 2 + .7em); /* room for two lines, so the video doesn't jump as lines change */
+}
+.player.yt .captions:empty { display: block; }
+/* Which captions these are (YouTube's automatic ones, its translation, another language) and a
+   dubbed audio track: one or two small lines on the same black bar, under the captions. */
+.player.yt .yt-note { background: #111; color: #a8a8a8; font-size: 12px; line-height: 1.4; padding: 0 .8em .4em; }
+.player.yt .yt-note[hidden] { display: none; }
+.player.yt .yt-note p { margin: 0; }
+/* The "can be heard in ... too" note: there for 12 s, fading out over the last second (player.js). */
+.player.yt .yt-note .yt-note-temp { animation: yt-note-out 12s linear forwards; }
+@keyframes yt-note-out { 0%, 91% { opacity: 1; } 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .player.yt .yt-note .yt-note-temp { animation: none; } }
+.player.yt .yt-note button { background: none; border: 0; min-height: 0; padding: 0; color: #fff; font: inherit; text-decoration: underline; cursor: pointer; }
+.player.yt.cc-off .captions { display: none; }
+.player.yt #more { display: none; }
+@media (max-width: 760px) {
+  /* Phone: a slim one-line banner, then the video at full width in its 16:9 shape (YouTube asks
+     for at least 200 x 200), then the captions; the transcript takes whatever height is left.
+     The less-used banner buttons move into the "more" menu. */
+  .player.yt .player-head { flex-wrap: nowrap; gap: 8px; padding: 4px 10px; }
+  .player.yt .player-head img, .player.yt .player-head .meta .small { display: none; }
+  .player.yt .player-head .meta { flex: 1 1 0; min-width: 0; }
+  .player.yt .player-head .title { display: block; white-space: nowrap; font-size: 14px; }
+  .player.yt .player-head > .row { width: auto; flex: none; flex-wrap: nowrap; gap: 4px; }
+  .player.yt .player-head button, .player.yt .player-head .btn { min-height: 28px; padding: 2px 8px; font-size: 12px; }
+  .player.yt #fullscreen, .player.yt #font-down, .player.yt #font-up,
+  .player.yt #exp-txt, .player.yt #exp-srt, .player.yt #exp-vtt { display: none; }
+  .player.yt #more { display: inline-flex; }
+  .player.yt .stage { justify-content: flex-start; }
+  .player.yt .yt-col { flex: 0 1 auto; }
+  .player.yt .screen { flex: 0 1 auto; width: 100%; aspect-ratio: 16 / 9; min-height: 200px; }
+  .player.yt.panel-open .transcript-wrap { flex: 1 1 0; height: auto; min-height: 96px; }
+  .player.yt .controls { padding: 2px 10px 6px; }
+  .player.yt .btnrow { margin-top: 0; }
+  .player.yt .btnrow .play { width: 38px; height: 38px; font-size: 16px; }
+}
+/* Netflix: its player is a window of the app laid exactly over .screen (nfmedia.js); underneath,
+   the stage says what is happening while there is no picture (opening, a sign-in needed). */
+.player.nf .nf-frame {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; padding: 16px; text-align: center; color: #c9c8c2; background: #000;
+}
+.player.nf .nf-frame .nf-msg { margin: 0; max-width: 34em; font-size: 15px; line-height: 1.5; }
+.player.nf .nf-frame .nf-msg:empty { display: none; }
+.player.nf .nf-frame button { min-width: 10em; }
+.player.nf .transcript .nf-wait {
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--muted); text-align: center; margin: 2em 1em;
+}
+
+/* In the phone app the YouTube player has its own banner (with the way back), so the app's
+   top bar steps aside and the video starts higher up. */
+body.in-player:has(.player.yt) .topbar { display: none; }
+@media (max-width: 640px) {
+  /* Phone: the word popup is part of the black bar under the video. It fills the space from
+     directly below the captions (never over them or the video) down to the play controls.
+     player.js sets --dock-top (and --dock-bottom, used further down). */
+  .player.yt .word-bubble.sheet {
+    top: var(--dock-top, auto) !important; max-height: none;
+    border: 0; border-top: 1px solid #2c2c2c; border-radius: 0; box-shadow: none; animation: none;
+    padding: 8px 14px 10px; background: #111; color: #f2f1ec;
+    --surface: #111; --surface-2: #242424; --text: #f2f1ec; --muted: #aaa8a0; --border: #383838;
+  }
+}
+
+/* Computer: a word tapped in the captions under a YouTube video opens its popup as part of the
+   same black bar, directly under them (it may not be drawn over YouTube's player, so the video
+   gets shorter while it is open). player.js docks it there; see wordbubble.js. */
+.player.yt .word-bubble.docked {
+  position: static; width: auto; flex: none; max-height: min(40vh, 360px);
+  border: 0; border-top: 1px solid #2c2c2c; border-radius: 0; box-shadow: none; animation: none;
+  padding: 8px 16px 10px; background: #111; color: #f2f1ec;
+  --surface: #111; --surface-2: #242424; --text: #f2f1ec; --muted: #aaa8a0; --border: #383838;
+}
+
+/* ---------- word popup: buttons row pinned, the rest scrolls ----------
+   The popup's heading stays at its top and its row of buttons (Word, Sentence, Continue, Save)
+   at its bottom; only the definition between them scrolls. */
+.word-bubble { display: flex; flex-direction: column; overflow: hidden; }
+.word-bubble[hidden] { display: none; }
+.word-bubble > .wb-head, .word-bubble > .wb-actions { flex: none; }
+.word-bubble > .wb-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.word-bubble > .wb-actions { margin-top: auto; }
+/* The "Explain words with" menu keeps its full height (the definition under it gives way), so a short
+   popup on a phone doesn't squash it down to its first choice; a very short one scrolls the menu. */
+.word-bubble > .wb-srcmenu { flex: 0 0 auto; max-height: 75%; overflow-y: auto; overscroll-behavior: contain; }
+@media (max-width: 640px) {
+  /* Phone, in a player: the popup stops just above the play controls, which stay in reach, so
+     its buttons row rests right on top of them. player.js sets --dock-bottom. */
+  .player .word-bubble.sheet { bottom: var(--dock-bottom, 0px); padding-bottom: 8px; }
+  .player .word-bubble.sheet > .wb-actions { flex-wrap: nowrap; gap: 4px; margin-top: 6px; padding-top: 8px; }
+  .player .word-bubble.sheet > .wb-actions button { flex: 1 1 auto; min-width: 0; padding: 4px 6px; font-size: 12px; white-space: nowrap; }
+  .player .word-bubble.sheet > .wb-actions button.icon { flex: none; min-width: 28px; }
+  /* Word, Sentence, Continue and Add audio show just their icons so the row isn't crowded; their
+     names stay in the tooltip and for screen readers. Save keeps its word. */
+  .player .word-bubble.sheet > .wb-actions .wb-label { display: none; }
+  .player .word-bubble.sheet > .wb-actions button:has(.wb-label) { flex: 1 1 0; min-width: 36px; padding: 4px 6px; }
+  .player .word-bubble.sheet > .wb-actions button[data-act="save"] { flex: 1.6 1 auto; }
+}
+
+/* ---------- word popup: the pause / keep-playing switch ----------
+   Top left of the popup, no words: the knob shows a pause sign (purple track: a tapped word
+   plays, then playback pauses) or a play sign (teal track: playback carries on). The two colours
+   are the two ends of the logo's gradient. */
+.word-bubble .wb-mode {
+  flex: none; align-self: center; position: relative; width: 44px; height: 24px; min-height: 0; min-width: 0; padding: 0;
+  border: 0; border-radius: 99px; cursor: pointer;
+  background: linear-gradient(45deg, #4a0b47, #86308f); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .22);
+}
+.word-bubble .wb-mode.on { background: linear-gradient(45deg, #1b526d, #0b8693); }
+.word-bubble .wb-mode:hover:not(:disabled) { background: linear-gradient(45deg, #4a0b47, #86308f); filter: brightness(1.12); }
+.word-bubble .wb-mode.on:hover:not(:disabled) { background: linear-gradient(45deg, #1b526d, #0b8693); }
+.wb-mode .wb-knob {
+  position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: #fff; color: #6a1f72;
+  display: grid; place-items: center; box-shadow: 0 1px 3px rgba(0, 0, 0, .35); transition: left .16s ease, color .16s ease;
+}
+.wb-mode.on .wb-knob { left: 22px; color: #0b7783; }
+.wb-mode .wb-knob svg { width: 10px; height: 10px; fill: currentColor; display: block; }
+
+/* ---------- follow the channel (YouTube player; the reel player may use the same) ----------
+   Markup: <span class="follow-wrap"><button class="follow-btn [on]"><span class="mark">+</span>
+   <span class="label">Follow</span></button><span class="follow-pop" hidden>Following</span></span>
+   It sits in the top banner, directly to the right of the title. An outline in the app's action
+   colour until followed, filled once followed; the "Following" bubble drops below it for a moment. */
+.follow-wrap { position: relative; display: inline-flex; flex: none; }
+.follow-btn {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 4px 16px; border-radius: 99px;
+  border: 1.5px solid var(--accent); background: transparent; color: var(--accent); font-weight: 600; white-space: nowrap;
+}
+.follow-btn:hover:not(:disabled) { background: var(--accent-soft); border-color: var(--accent); }
+.follow-btn.on, .follow-btn.on:hover:not(:disabled) { background: var(--accent); color: var(--accent-ink); }
+.follow-btn.on:hover:not(:disabled) { filter: brightness(1.08); }
+.follow-btn .mark { font-weight: 700; }
+.follow-pop {
+  position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; padding: 4px 12px; border-radius: 99px;
+  background: var(--accent); color: var(--accent-ink); font-size: 12.5px; font-weight: 600; white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .28); pointer-events: none; animation: follow-pop 1.3s ease forwards;
+}
+.follow-pop[hidden] { display: none; }
+@keyframes follow-pop {
+  0% { opacity: 0; transform: translateY(-6px) scale(.9); }
+  14% { opacity: 1; transform: none; }
+  75% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translateY(4px); }
+}
+@media (max-width: 640px) {
+  /* Phone: a small round button with just the sign, so the title keeps its room. */
+  .follow-btn, .player.yt .player-head .follow-btn { width: 30px; height: 30px; min-height: 0; padding: 0; justify-content: center; font-size: 16px; }
+  .follow-btn .label { display: none; }
+}
+
+/* ---------- quick / detailed lookup (components/lookupmode.js) ----------
+   The switch: two small round-ended buttons in one pill, a lightning bolt (quick: just the
+   meaning) and a target with an arrow (detailed: the full popup). The chosen one is filled with
+   the app's action colour. */
+.lookup-toggle { display: inline-flex; flex: none; align-items: center; gap: 2px; padding: 2px; border-radius: 99px;
+  background: var(--surface-2); border: 1px solid var(--border); vertical-align: middle; }
+div.lookup-toggle button[data-mode] { display: grid; place-items: center; width: 30px; height: 26px; min-width: 0; min-height: 0;
+  padding: 0; border: 0; border-radius: 99px; background: transparent; color: var(--muted); cursor: pointer; }
+div.lookup-toggle button[data-mode]:hover:not(.on) { background: transparent; color: var(--text); filter: none; }
+div.lookup-toggle button[data-mode].on { background: var(--accent); color: var(--accent-ink); }
+div.lookup-toggle button[data-mode].on .ic .fill { opacity: .28; }
+div.lookup-toggle button[data-mode] .ic { vertical-align: 0; }
+/* Compact: only the chosen mode shows; a tap changes to the other. */
+.lookup-toggle.compact button[data-mode]:not(.on) { display: none; }
+/* On the reel player's dark bars. */
+.reel-top .lookup-toggle, .reel-controls .lookup-toggle { background: #1d1d1d; border-color: #383838; }
+.reel-top div.lookup-toggle button[data-mode]:not(.on) { color: #aaa8a0; }
+.reel-controls div.lookup-toggle button[data-mode] { width: 30px; height: 26px; min-height: 0; padding: 0; }
+.reel-controls div.lookup-toggle button[data-mode].on { background: var(--accent); border: 0; color: var(--accent-ink); }
+/* The quick popup: the word, its meaning, and two buttons. */
+.word-bubble.quick:not(.sheet) { width: min(300px, calc(100% - 16px)); }
+.word-bubble.quick .wb-meaning { margin-bottom: 0; }
+.word-bubble [data-act="more"] { display: inline-flex; align-items: center; gap: 5px; }
+.word-bubble [data-act="more"] .ic { vertical-align: 0; }
+
+/* ---------- play controls: back 5 s / play / forward 5 s stay in the exact middle ----------
+   Only those three buttons take part in the row, so they are centred whatever else the bar holds.
+   Everything else is hung on the row's ends without taking up room in it: the speed chooser (made
+   smaller) at the left, the quick / detailed lookup switch at the right. Anything added to
+   .btnrow later must be positioned the same way, or it will push the play button off-centre. */
+.player .btnrow { position: relative; flex-wrap: nowrap; }
+.player .btnrow #speed {
+  position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: auto; min-width: 0; height: 30px; padding: 2px 4px; font-size: 12px;
+}
+.player .btnrow .lookup-toggle { position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
+/* "Looping sentence": beside the speed chooser where there is room for it ... */
+.player .btnrow #loop-chip { position: absolute; left: 72px; top: 50%; transform: translateY(-50%); white-space: nowrap; }
+@media (max-width: 640px) {
+  /* ... and on a phone, just above the bar's left corner. */
+  .player .btnrow #loop-chip { left: 0; top: auto; bottom: calc(100% + 34px); transform: none; }
+}
+@media (max-width: 350px) {
+  /* The narrowest phones: slimmer 5-second buttons, so the ends don't touch them. */
+  .player .btnrow #back5, .player .btnrow #fwd5 { padding: 4px 6px; font-size: 12px; }
+}
+
+/* ---------- a misheard word put right (wordbubble.js, fixword.js) ----------
+   Under the headword: what the transcript said, and Undo. */
+/* A misheard word put right (wordbubble.js): one purple pill on one line, "said → right ✕". */
+.word-bubble .wb-fix { display: flex; min-width: 0; margin: -2px 0 6px; }
+.wb-pill { display: inline-flex; align-items: center; max-width: 100%; min-width: 0; border-radius: 99px; background: #6a3d8f; color: #fff; overflow: hidden; }
+.word-bubble .wb-pill button { min-height: 0; border: 0; border-radius: 0; background: transparent; color: inherit; box-shadow: none; }
+.wb-pill .wb-pill-text { display: inline-flex; align-items: baseline; gap: 6px; min-width: 0; padding: 2px 6px 2px 11px; font-size: 13px; line-height: 1.5; white-space: nowrap; }
+.wb-pill .wb-pill-text:only-child { padding-right: 11px; }
+.wb-pill .wb-pill-text > * { overflow: hidden; text-overflow: ellipsis; }
+/* Short of room, what the transcript said gives way first; the right word keeps its room longest. */
+.wb-pill .wb-pill-text s { flex: 0 20 auto; min-width: 2em; }
+.wb-pill .wb-pill-text s ~ .ar { flex: 0 1 auto; min-width: 0; }
+.wb-pill .wb-pill-text .ar { font-family: var(--ar-font); font-size: 15px; }
+.wb-pill .wb-pill-text s { opacity: .75; text-decoration-thickness: 1.5px; }
+.wb-pill .wb-pill-text span[aria-hidden] { opacity: .75; flex: none; }
+.wb-pill .wb-pill-x { flex: none; display: grid; place-items: center; width: 26px; padding: 4px 8px 4px 2px; opacity: .85; }
+.wb-pill .wb-pill-x:hover, .wb-pill .wb-pill-text:hover { background: rgba(255, 255, 255, .12); }
+.word-bubble .wb-fix-why { margin: -2px 0 8px; font-size: 13px; color: var(--muted); }
+
+/* ---------- player top row on a phone: icon-only buttons ----------
+   The video's title needs the room, so a button that has a line icon shows just the icon there
+   (its name stays as its tooltip and accessible label). Desktop keeps the words. */
+@media (max-width: 640px) {
+  .player-head #toggle-panel .lbl, .player-head .next-chapter .lbl, .player-head #nf-audio .lbl, .player-head #nf-subs .lbl { display: none; }
+  .player-head #toggle-panel, .player-head .next-chapter, .player-head #nf-audio, .player-head #nf-subs { padding-left: 7px; padding-right: 7px; }
+}
+.player-head .next-chapter { display: inline-flex; align-items: center; gap: 4px; }
+[dir="rtl"] .player-head .next-chapter .ic { transform: scaleX(-1); }
+
+/* Arabic vowels switch (js/vowels.js): حَ, filled in while the words show their vowel marks. */
+.vowels-btn { font-family: var(--ar-font); font-size: 18px; line-height: 1; min-width: 34px; }
+button.ghost.vowels-btn.on, button.ghost.vowels-btn.on:hover { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+button.ghost.vowels-btn.on.held { background: transparent; color: var(--accent); border: 1px dashed var(--accent); }
+.reel-controls .vowels-btn { height: 26px; min-height: 0; padding: 0 8px; }
+.vowels-row label { display: inline-flex; align-items: center; gap: 6px; flex-basis: 100%; }

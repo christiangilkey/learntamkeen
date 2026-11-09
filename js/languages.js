@@ -1,0 +1,564 @@
+// The languages Tamkeen can teach, and everything that differs between them on screen:
+// reading direction, sample text, how words are separated, and the labels in the word popup.
+// Shared by the desktop app and the Android app. (app/languages.py holds the same list of codes
+// for the server side: which language Whisper listens for.)
+
+import THAI_COMMON from "./wordlists/th.js";
+
+const LTR ={ dir: "ltr", unspaced: false, reading: "below", root: "", standard: "Standard form", note: "Usage" };
+
+export const LANGUAGES = {
+  es: {
+    ...LTR, name: "Spanish", native: "Español",
+    hello: "¡Bienvenido!", hi: "hola", search: "buscar", word: "la palabra", wordOrPhrase: "palabra o frase",
+    greet: ["Buenos días", "Buenas tardes", "Buenas noches"],
+    sample: "Bienvenidos a un nuevo episodio del pódcast.",
+    pageSample: "El café es una bebida que se obtiene de los granos tostados del cafeto, y es una de las más populares del mundo.",
+    test: { word: "ahorita", marked: "Te llamo ⟦ahorita⟧, ¿vale?", podcast: "Español real" },
+  },
+  ar: {
+    dir: "rtl", unspaced: false, name: "Arabic", native: "العربية",
+    reading: "replace", root: "Root", standard: "In MSA", note: "Dialect",
+    hello: "أَهْلًا وَسَهْلًا", hi: "مرحبا", search: "ابحث", word: "الكلمة", wordOrPhrase: "كلمة أو عبارة",
+    greet: ["صباح الخير", "نهارك سعيد", "مساء الخير"],
+    sample: "مَرْحَبًا بِكُمْ فِي حَلْقَةٍ جَدِيدَةٍ مِنَ البودكاست.",
+    pageSample: "القهوة مشروب يُحضر من بذور البن المحمصة، وتعد واحدة من أكثر المشروبات شعبية في العالم.",
+    test: { word: "هون", marked: "انتي جديدة ⟦هون⟧؟", podcast: "Real Arabic (Levantine)" },
+    searchNote: "Matches ignore diacritics (tashkeel) and spelling variants of alef (أ إ آ ا), taa marbuta/haa (ة ه) and alef maqsura/yaa (ى ي).",
+  },
+  fr: {
+    ...LTR, name: "French", native: "Français",
+    hello: "Bienvenue !", hi: "salut", search: "chercher", word: "le mot", wordOrPhrase: "mot ou expression",
+    greet: ["Bonjour", "Bon après-midi", "Bonsoir"],
+    sample: "Bienvenue dans un nouvel épisode du podcast.",
+    pageSample: "Le café est une boisson obtenue à partir des graines torréfiées du caféier, et l'une des plus populaires au monde.",
+    test: { word: "truc", marked: "C'est quoi ce ⟦truc⟧ ?", podcast: "Français réel" },
+  },
+  ja: {
+    ...LTR, unspaced: true, name: "Japanese", native: "日本語", root: "Characters",
+    hello: "ようこそ", hi: "こんにちは", search: "検索", word: "単語", wordOrPhrase: "単語やフレーズ",
+    greet: ["おはようございます", "こんにちは", "こんばんは"],
+    sample: "ポッドキャストの新しいエピソードへようこそ。",
+    pageSample: "コーヒーは焙煎したコーヒー豆から作られる飲み物で、世界で最も人気のある飲み物の一つです。",
+    test: { word: "めっちゃ", marked: "これ、⟦めっちゃ⟧おいしいね。", podcast: "Real Japanese" },
+  },
+  zh: {
+    ...LTR, unspaced: true, name: "Chinese", native: "中文", root: "Characters",
+    hello: "欢迎", hi: "你好", search: "搜索", word: "词语", wordOrPhrase: "词语或短语",
+    greet: ["早上好", "下午好", "晚上好"],
+    sample: "欢迎收听新一期的播客节目。",
+    pageSample: "咖啡是用烘焙过的咖啡豆制作的饮料，是世界上最受欢迎的饮料之一。",
+    test: { word: "靠谱", marked: "他这个人很⟦靠谱⟧。", podcast: "Real Chinese" },
+  },
+  ru: {
+    ...LTR, name: "Russian", native: "Русский", reading: "replace",
+    hello: "Добро пожаловать!", hi: "привет", search: "поиск", word: "слово", wordOrPhrase: "слово или выражение",
+    greet: ["Доброе утро", "Добрый день", "Добрый вечер"],
+    sample: "Добро пожаловать в новый выпуск подкаста.",
+    pageSample: "Кофе — это напиток из обжаренных зёрен кофейного дерева, один из самых популярных в мире.",
+    test: { word: "ладно", marked: "Ну ⟦ладно⟧, пойдём.", podcast: "Real Russian" },
+  },
+  it: {
+    ...LTR, name: "Italian", native: "Italiano",
+    hello: "Benvenuto!", hi: "ciao", search: "cerca", word: "la parola", wordOrPhrase: "parola o espressione",
+    greet: ["Buongiorno", "Buon pomeriggio", "Buonasera"],
+    sample: "Benvenuti a un nuovo episodio del podcast.",
+    pageSample: "Il caffè è una bevanda che si ottiene dai semi tostati della pianta del caffè, ed è una delle più diffuse al mondo.",
+    test: { word: "magari", marked: "Ci vediamo ⟦magari⟧ domani.", podcast: "Italiano vero" },
+  },
+  tl: {
+    ...LTR, name: "Tagalog", native: "Tagalog", root: "Root",
+    hello: "Maligayang pagdating!", hi: "kumusta", search: "hanapin", word: "ang salita", wordOrPhrase: "salita o parirala",
+    greet: ["Magandang umaga", "Magandang hapon", "Magandang gabi"],
+    sample: "Maligayang pagdating sa bagong episode ng podcast.",
+    pageSample: "Ang kape ay inuming gawa sa mga binusang buto ng halamang kape, at isa ito sa pinakasikat na inumin sa buong mundo.",
+    test: { word: "kasi", marked: "Hindi ako nakapunta ⟦kasi⟧ umulan.", podcast: "Totoong Tagalog" },
+  },
+  pt: {
+    ...LTR, name: "Brazilian Portuguese", native: "Português (Brasil)",
+    hello: "Bem-vindo!", hi: "oi", search: "buscar", word: "a palavra", wordOrPhrase: "palavra ou expressão",
+    greet: ["Bom dia", "Boa tarde", "Boa noite"],
+    sample: "Bem-vindos a mais um episódio do podcast.",
+    pageSample: "O café é uma bebida feita a partir dos grãos torrados do cafeeiro, e é uma das mais populares do mundo.",
+    test: { word: "beleza", marked: "Tá tudo ⟦beleza⟧, a gente se vê amanhã.", podcast: "Português de verdade" },
+  },
+  ca: {
+    ...LTR, name: "Catalan", native: "Català",
+    hello: "Benvingut!", hi: "hola", search: "cercar", word: "la paraula", wordOrPhrase: "paraula o expressió",
+    greet: ["Bon dia", "Bona tarda", "Bona nit"],
+    sample: "Benvinguts a un nou episodi del pòdcast.",
+    pageSample: "El cafè és una beguda que s'obté de les llavors torrades de la planta del cafè, i és una de les més populars del món.",
+    test: { word: "doncs", marked: "I ara què fem, ⟦doncs⟧?", podcast: "Català de veritat" },
+  },
+  ceb: {
+    ...LTR, name: "Bisaya (Cebuano)", native: "Binisaya", root: "Root",
+    hello: "Maayong pag-abot!", hi: "kumusta", search: "pangita", word: "ang pulong", wordOrPhrase: "pulong o hugpong sa pulong",
+    greet: ["Maayong buntag", "Maayong hapon", "Maayong gabii"],
+    sample: "Maayong pag-abot sa bag-ong episode sa podcast.",
+    pageSample: "Ang kape usa ka ilimnon nga hinimo gikan sa sinanlag nga liso sa tanom nga kape, ug usa kini sa labing sikat nga ilimnon sa tibuok kalibotan.",
+    test: { word: "lagi", marked: "Mao ⟦lagi⟧ na, sakto ka.", podcast: "Tinuod nga Bisaya" },
+  },
+  th: {
+    ...LTR, unspaced: true, name: "Thai", native: "ไทย",
+    hello: "ยินดีต้อนรับ", hi: "สวัสดี", search: "ค้นหา", word: "คำ", wordOrPhrase: "คำหรือวลี",
+    greet: ["สวัสดีตอนเช้า", "สวัสดีตอนบ่าย", "สวัสดีตอนเย็น"],
+    sample: "ยินดีต้อนรับสู่พอดแคสต์ตอนใหม่",
+    pageSample: "กาแฟเป็นเครื่องดื่มที่ทำจากเมล็ดกาแฟคั่ว และเป็นหนึ่งในเครื่องดื่มที่ได้รับความนิยมมากที่สุดในโลก",
+    test: { word: "เดี๋ยว", marked: "⟦เดี๋ยว⟧โทรกลับนะ", podcast: "ภาษาไทยจริง" },
+  },
+  de: {
+    ...LTR, name: "German", native: "Deutsch",
+    hello: "Willkommen!", hi: "hallo", search: "suchen", word: "das Wort", wordOrPhrase: "Wort oder Ausdruck",
+    greet: ["Guten Morgen", "Guten Tag", "Guten Abend"],
+    sample: "Willkommen zu einer neuen Folge des Podcasts.",
+    pageSample: "Kaffee ist ein Getränk aus den gerösteten Samen der Kaffeepflanze und eines der beliebtesten Getränke der Welt.",
+    test: { word: "eigentlich", marked: "Was machst du ⟦eigentlich⟧ heute Abend?", podcast: "Echtes Deutsch" },
+  },
+  fa: {
+    dir: "rtl", unspaced: false, name: "Persian", native: "فارسی",
+    reading: "below", root: "", standard: "Standard form", note: "Usage",
+    hello: "خوش آمدید!", hi: "سلام", search: "جستجو", word: "واژه", wordOrPhrase: "واژه یا عبارت",
+    greet: ["صبح بخیر", "روز بخیر", "عصر بخیر"],
+    sample: "به قسمت تازه‌ای از پادکست خوش آمدید.",
+    pageSample: "قهوه نوشیدنی‌ای است که از دانه‌های برشته‌شدهٔ گیاه قهوه به دست می‌آید و یکی از محبوب‌ترین نوشیدنی‌های جهان است.",
+    test: { word: "دیگه", marked: "⟦دیگه⟧ دیر شده، بریم.", podcast: "فارسی واقعی" },
+    searchNote: "Matches ignore short-vowel marks, the half space inside words (ZWNJ) and Arabic spellings of k and y (ك ي for ک ی).",
+  },
+  hi: {
+    ...LTR, name: "Hindi", native: "हिन्दी",
+    hello: "स्वागत है!", hi: "नमस्ते", search: "खोजें", word: "शब्द", wordOrPhrase: "शब्द या वाक्यांश",
+    greet: ["सुप्रभात", "नमस्ते", "शुभ संध्या"],
+    sample: "पॉडकास्ट के नए एपिसोड में आपका स्वागत है।",
+    pageSample: "कॉफ़ी भुने हुए कॉफ़ी के बीजों से बनने वाला एक पेय है, और यह दुनिया के सबसे लोकप्रिय पेयों में से एक है।",
+    test: { word: "यार", marked: "⟦यार⟧, आज बहुत गर्मी है।", podcast: "असली हिन्दी" },
+  },
+  ko: {
+    ...LTR, name: "Korean", native: "한국어", root: "Hanja",
+    hello: "환영합니다!", hi: "안녕하세요", search: "검색", word: "단어", wordOrPhrase: "단어 또는 표현",
+    greet: ["좋은 아침이에요", "안녕하세요", "좋은 저녁이에요"],
+    sample: "팟캐스트 새 에피소드에 오신 것을 환영합니다.",
+    pageSample: "커피는 볶은 커피콩으로 만든 음료로, 세계에서 가장 인기 있는 음료 중 하나입니다.",
+    test: { word: "대박", marked: "와, 이 노래 진짜 ⟦대박⟧!", podcast: "진짜 한국어" },
+  },
+  // Latin: written with or without macrons (ā ē ī ō ū: long vowels); matching ignores them (./lexicon/latin.js). The
+  // word popup shows a word with its macrons in place of the word ("replace"), as Russian shows its stress.
+  la: {
+    ...LTR, reading: "replace", name: "Latin", native: "Latīna",
+    hello: "Salvē!", hi: "salvē", search: "quaere", word: "verbum", wordOrPhrase: "verbum vel locūtiō",
+    greet: ["Bonum māne", "Salvē", "Bonum vesperum"],
+    sample: "Salvēte, amīcī! Hoc est novum podcastī nostrī ēpisōdium.",
+    pageSample: "Cafēum est pōtiō quae ex grānīs tostīs plantae cafēī fit, et inter pōtiōnēs tōtīus orbis terrārum maximē amātur.",
+    test: { word: "sānē", marked: "Crās ⟦sānē⟧ veniam, amīce!", podcast: "Latīnē loquimur" },
+    searchNote: "Matches ignore macrons (ā = a), so a word typed without them finds it written with them.",
+  },
+  en: {
+    ...LTR, name: "English", native: "English",
+    hello: "Welcome!", hi: "hi", search: "search", word: "the word", wordOrPhrase: "word or phrase",
+    greet: ["Good morning", "Good afternoon", "Good evening"],
+    sample: "Welcome to a brand new episode of the podcast.",
+    pageSample: "Coffee is a drink made from the roasted seeds of the coffee plant, and it is one of the most popular drinks in the world.",
+    test: { word: "gonna", marked: "I'm ⟦gonna⟧ call you later, okay?", podcast: "Real English" },
+  },
+};
+
+export const LANGUAGE_CODES = Object.keys(LANGUAGES);
+const OTHER = { ...LTR, name: "", native: "" }; // text in a language the app doesn't teach
+
+export const isLanguage = (code) => Object.prototype.hasOwnProperty.call(LANGUAGES, code);
+export const langInfo = (code) => (isLanguage(code) ? LANGUAGES[code] : OTHER);
+
+// ---------- the language being studied ----------
+// Set by each app shell from the saved settings. Until the user has chosen, this is "" and
+// anything that needs a language falls back to Arabic, the app's first language.
+let study = "";
+const studyListeners = new Set();
+export function setStudyLanguage(code) {
+  const before = study;
+  study = isLanguage(code) ? code : "";
+  if (study !== before) for (const fn of studyListeners) { try { fn(study); } catch { /* a listener must not break settings */ } }
+}
+/** Be told when the language being studied is set or changes: fn(code). */
+export function onStudyLanguage(fn) { studyListeners.add(fn); return () => studyListeners.delete(fn); }
+export const studyLanguage = () => study || "ar";
+export const hasStudyLanguage = () => !!study;
+
+/** The language of something studied: what was recorded when it was transcribed or imported.
+ * Items from before the app knew other languages are Arabic. */
+export const episodeLanguage = (ep) => (ep && isLanguage(ep.language) ? ep.language : "ar");
+
+// ---------- telling languages apart by their writing ----------
+const SCRIPTS = [
+  ["ar", /[؀-ۿݐ-ݿࢠ-ࣿ]/g],
+  ["kana", /[぀-ヿ]/g],
+  ["han", /[㐀-䶿一-鿿]/g],
+  ["ru", /[Ѐ-ӿ]/g],
+  ["th", /[\u0E00-\u0E7F]/g],
+  ["latin", /[A-Za-zÀ-ɏ]/g],
+  ["hi", /[\u{900}-\u{97F}]/gu], // Devanagari (Marathi and Nepali are written in it too; the app teaches only Hindi)
+  ["ko", /[ᄀ-ᇿ㄰-㆏가-힯]/g],
+];
+
+/** The taught languages written in Latin letters: text in Latin letters is one of these when it is
+ * the language being studied (the letters alone can't tell them apart, or from English). */
+export const LATIN_LANGUAGES = ["es", "fr", "it", "tl", "pt", "ca", "ceb", "en", "de", "la"];
+
+// Persian is written in Arabic letters, with four of its own (پ چ ژ گ), its own forms of k and y
+// (ک ی where Arabic writes ك ي), and ZWNJ, the "half space" inside words (می‌خواهم). Arabic has ة, ى, ي, ك and
+// tanween. Each counts as a sign of its language (ی is Urdu's y too; Urdu's own letters are not Persian).
+const PERSIAN_SIGNS = /[پچژگکی‌]/g;
+const ARABIC_SIGNS = /[ةىيكًٌٍ]/g;
+
+/** Is this Arabic-script text Persian rather than Arabic? With no sign either way (a short word with
+ * no telling letter), it counts as the language being studied when that is one of the two. */
+export function looksPersian(text, hint = studyLanguage()) {
+  const s = String(text || "").slice(0, 2000);
+  const fa = (s.match(PERSIAN_SIGNS) || []).length;
+  const ar = (s.match(ARABIC_SIGNS) || []).length;
+  return fa === ar ? hint === "fa" : fa > ar;
+}
+
+/** Which language a piece of text is written in, judged by its letters. Used where nothing
+ * recorded the language (saved words, search results, things friends send). Text in Latin
+ * letters counts as the language being studied when that is written in Latin letters. */
+export function detectLanguage(text, hint = studyLanguage()) {
+  const s = String(text || "").slice(0, 2000);
+  const count = {};
+  let top = "";
+  for (const [name, re] of SCRIPTS) {
+    count[name] = (s.match(re) || []).length;
+    if (count[name] > (count[top] || 0)) top = name;
+  }
+  if (count.kana && (top === "han" || top === "kana")) return "ja";
+  if (top === "han") return hint === "ja" ? "ja" : "zh";
+  if (top === "ar") return looksPersian(s, hint) ? "fa" : "ar";
+  if (top === "ru" || top === "th" || top === "hi" || top === "ko") return top;
+  if (top === "latin") return LATIN_LANGUAGES.includes(hint) ? hint : "en";
+  return hint;
+}
+
+/** HTML attributes that make an element show text of this language correctly (direction and font). */
+export function langAttrs(code) {
+  return `lang="${isLanguage(code) ? code : "en"}" dir="${langInfo(code).dir}"`;
+}
+/** The same, set on an existing element. */
+export function setLang(el, code) {
+  el.lang = isLanguage(code) ? code : "en";
+  el.dir = langInfo(code).dir;
+  return el;
+}
+
+/** `translation` with ⟦ ⟧ put around `meaning`, when the meaning appears in it exactly once as
+ * whole words; "" otherwise. Used for answers that came without the marks (ones saved before
+ * the AI was asked for them, or where it forgot). */
+function markMeaning(translation, meaning) {
+  const wanted = meaning.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  if (!wanted) return "";
+  const hits = [...translation.matchAll(new RegExp(`(?<![\\p{L}\\p{N}])${wanted}(?![\\p{L}\\p{N}])`, "giu"))];
+  if (hits.length !== 1) return "";
+  const from = hits[0].index;
+  const to = from + hits[0][0].length;
+  return `${translation.slice(0, from)}⟦${translation.slice(from, to)}⟧${translation.slice(to)}`;
+}
+
+/** What to store when a looked-up word is saved to vocab (`def` is the AI's answer, or null).
+ * Arabic keeps the fully vowelled spelling as the word itself; other languages keep the word as
+ * written and note how it is read. `translation` is the sentence in the learner's own language
+ * with ⟦ ⟧ around the part that renders the word: the front of the word's Anki card. */
+export function vocabFromDefinition(def, word, code) {
+  if (!def) return { text: word, meaning: "", notes: "", translation: "" };
+  const L = langInfo(code);
+  const vowelled = code === "ar" && def.vocalized;
+  const notes = [
+    !vowelled && def.vocalized && def.vocalized !== word && `Reading: ${def.vocalized}`,
+    def.lemma && `Dictionary form: ${def.lemma}`,
+    def.root && `${L.root || "Root"}: ${def.root}`,
+    def.pos, def.dialect_note,
+  ].filter(Boolean).join(" · ");
+  const plain = def.sentence_translation || "";
+  const translation = def.translation_marked || markMeaning(plain, def.meaning || "") || plain;
+  // (A misheard word is saved as the word that was said.)
+  return { text: vowelled ? def.vocalized : (def.correction || word), meaning: def.meaning || "", notes, translation };
+}
+
+// ---------- words with and without spaces ----------
+// Japanese and Chinese are written without spaces between words. Foreign words inside them
+// (names, brands) still are, so a space is kept only between two "spaced-script" words.
+const SPACED_START = /^[\p{Script=Latin}\p{Script=Cyrillic}\p{Script=Arabic}\p{Script=Greek}\p{N}]/u;
+const SPACED_END = /[\p{Script=Latin}\p{Script=Cyrillic}\p{Script=Arabic}\p{Script=Greek}\p{N},.;:!?)'"]$/u;
+
+/** What goes between two neighbouring words when they are shown or sent as a sentence. */
+export function gap(prev, next, code) {
+  if (!langInfo(code).unspaced) return " ";
+  return SPACED_END.test(prev) && SPACED_START.test(next) ? " " : "";
+}
+
+export function joinWords(words, code) {
+  let out = "";
+  for (let i = 0; i < words.length; i++) out += (i ? gap(words[i - 1], words[i], code) : "") + words[i];
+  return out;
+}
+
+// Better word splitters, from dictionaries: web/js/lexicon/readings.js sets one for Japanese and for
+// Chinese once that language's dictionary is loaded. Until then the device's own word breaker is used.
+const splitters = new Map();
+/**
+ * Split a language's text with `splitter` from now on (null: back to the device's word breaker).
+ *   split(text)  [{index, segment}, ...] covering the text, like Intl.Segmenter's segments
+ *   show(word)   optional: the word as it is to be shown (Chinese in the characters the learner chose)
+ */
+export function setWordSplitter(code, splitter) {
+  if (splitter) splitters.set(code, splitter);
+  else splitters.delete(code);
+}
+
+const OPENERS = /^[「『（《〈【〔［｛“‘(\[{«¿¡]+$/u;
+const LETTERS = /[\p{L}\p{N}]/u;
+
+// Thai: the device's word breaker cuts some everyday words in two or three (โรงพยาบาล "hospital" ->
+// โรง + พยาบาล, ผลกระทบ "impact" -> ผลก + ระ + ทบ). Neighbouring pieces that together spell one of
+// Thai's 1000 commonest words are joined back into it. A few of those are left apart: in running text
+// they are more often two words (ที่อยู่ "who is at" more than "address", วันที่ "the day that").
+const THAI_APART = new Set(["วันที่", "ก็คือ", "หรือไม่", "แล้วก็", "ที่อยู่", "ที่สำคัญ", "ที่ผ่านมา", "อันเป็น", "ไม่ว่า"]);
+const THAI_WORDS = new Set(THAI_COMMON.filter((w) => !THAI_APART.has(w)));
+const THAI_JOIN = 4; // pieces at most
+
+// Spoken Thai: the device's word breaker knows few of the little words of talk, and around two of them
+// it puts one letter on the wrong side: เนี่ย ("this, you know") before a word comes out เนี่ | ยมัน, and
+// งี้ ("like this") after one comes out บอ | กงี้ or อย่า | งงี้. That letter is moved back.
+const THAI_PARTICLE_END = /(?:เนี่|เนี้)$/;
+const THAI_NGI = /^[ก-ฮ]งี้/;
+
+function mendThai(parts) {
+  // เนี่ย glued onto the end of a piece (คนิคเนี่ย, of เทคนิค): cut off, so the piece can find its word
+  for (let i = 0; i < parts.length; i++) {
+    const m = /^(.+?)(เนี่ย|เนี้ย)$/.exec(parts[i].segment);
+    if (m) parts.splice(i, 1, { index: parts[i].index, segment: m[1] }, { index: parts[i].index + m[1].length, segment: m[2] });
+  }
+  for (let i = 0; i + 1 < parts.length; i++) {
+    const a = parts[i], b = parts[i + 1];
+    if (b.segment.length < 2) continue;
+    if (THAI_PARTICLE_END.test(a.segment) && b.segment[0] === "ย") {
+      parts[i] = { index: a.index, segment: a.segment + "ย" };
+      parts[i + 1] = { index: b.index + 1, segment: b.segment.slice(1) };
+    } else if (THAI_NGI.test(b.segment) && /[฀-๿]$/.test(a.segment)) {
+      parts[i] = { index: a.index, segment: a.segment + b.segment[0] };
+      parts[i + 1] = { index: b.index + 1, segment: b.segment.slice(1) };
+    }
+  }
+  return parts;
+}
+
+/** Thai written the way the word breaker and the dictionaries expect: Whisper writes ำ as two characters
+ * (ํ + า: ตํารวจ), which looks the same but cuts the word in two. */
+export const thaiLetters = (text) => String(text ?? "").replace(/ํา/g, "ำ");
+
+/** Thai word-breaker segments ([{segment, index}, ...] in order) with the cut common words joined. */
+export function joinThai(segments) {
+  const parts = mendThai([...segments]);
+  const out = [];
+  for (let i = 0; i < parts.length;) {
+    let take = 1;
+    for (let k = Math.min(THAI_JOIN, parts.length - i); k > 1; k--) {
+      if (THAI_WORDS.has(parts.slice(i, i + k).map((p) => p.segment).join(""))) { take = k; break; }
+    }
+    out.push(take === 1 ? parts[i] : { index: parts[i].index, segment: parts.slice(i, i + take).map((p) => p.segment).join("") });
+    i += take;
+  }
+  return out;
+}
+
+// ---------- Persian: its own letters, and words written with a half space ----------
+// Persian writes ک and ی where Arabic writes ك and ي (and ى); speech recognition and some keyboards give the
+// Arabic ones, which look different at the end of a word (ي with two dots) and miss the dictionaries. And a
+// Persian word is often two pieces joined by ZWNJ, the zero-width non-joiner or "half space" (می‌خواهم "I want",
+// کتاب‌ها "books"): one word to tap. Text that put a plain space (or a zero-width space) there instead is joined back.
+const ZWNJ = "‌";
+const AR_LETTER = "[\\u0620-\\u064A\\u066E-\\u06D3\\u06D5\\u06EE\\u06EF\\u06FA-\\u06FC]";
+const LOOKALIKE_ZWNJ = new RegExp(`(${AR_LETTER}[\\u064B-\\u065F\\u0670]*)[\\u200b\\u00ac\\u200c]+(?=${AR_LETTER})`, "gu");
+
+/** Persian text with Persian letters (ک ی for ك ي ى) and one kind of half space between the pieces of a word. */
+export const persianLetters = (text) => String(text ?? "").replace(/[يى]/g, "ی").replace(/ك/g, "ک").replace(LOOKALIKE_ZWNJ, `$1${ZWNJ}`);
+
+const FA_MARKS = /[ً-ٰٟـ]/g; // short vowels and tatweel
+const faBare = (w) => String(w).replace(/^[\s\p{P}]+|[\s\p{P}]+$/gu, "").replace(FA_MARKS, "");
+const FA_END = new RegExp(`${AR_LETTER}[\\u064B-\\u065F\\u0670]*\\u200c?$`, "u"); // ends with a letter (no punctuation)
+const FA_START = new RegExp(`^${AR_LETTER}`, "u");
+// Pieces that are never a word on their own: the plural ها and its forms, the superlative ترین, and نمی "not -ing".
+const FA_SUFFIXES = new Set(["ها", "های", "هایی", "هایم", "هایت", "هایش", "هایمان", "هایتان", "هایشان", "ترین"]);
+// After a word ending in a silent ه (خانه، رفته), "a", "my", "his" and the endings of "I have / they have…": خانه‌ای, رفته‌اند.
+const FA_AFTER_H = new Set(["ای", "ام", "ات", "اش", "ایم", "اید", "اند"]);
+
+/** Should Persian piece `next` be joined onto `prev` with a half space? `speech`: a transcript, where the
+ * present-tense می ("is -ing") written apart joins its verb too (in written text می may also be "wine"). */
+export function persianJoins(prev, next, speech = true) {
+  if (!FA_END.test(prev) || !FA_START.test(next)) return false;
+  const a = faBare(prev).replace(/‌$/, "");
+  const b = faBare(next);
+  if (!a || !b) return false;
+  if (FA_SUFFIXES.has(b)) return true;
+  if (FA_AFTER_H.has(b) && a.endsWith("ه") && a.length > 1) return true;
+  return b.length > 1 && (a === "نمی" || (speech && a === "می"));
+}
+
+/** Persian words as stored (Whisper's pieces, a page's spaced parts) with Persian letters, and the pieces of one
+ * word that were written apart joined into it (times from the first piece's start to the last one's end).
+ * Words that need neither come back as the very same object (so a misheard word can still be put right in them). */
+export function persianWords(W, speech = true) {
+  const out = { start: [], end: [], seg: [], text: [] };
+  let changed = false;
+  for (let i = 0; i < W.text.length; i++) {
+    const text = persianLetters(W.text[i]);
+    if (text !== String(W.text[i])) changed = true;
+    const last = out.text.length - 1;
+    if (last >= 0 && out.seg[last] === W.seg[i] && persianJoins(out.text[last], text, speech)) {
+      out.text[last] = out.text[last].replace(/\s+$/, "").replace(/‌$/, "") + ZWNJ + text.trim();
+      out.end[last] = W.end[i];
+      changed = true;
+      continue;
+    }
+    out.text.push(text);
+    out.start.push(W.start[i]);
+    out.end.push(W.end[i]);
+    out.seg.push(W.seg[i]);
+  }
+  return changed ? out : W;
+}
+
+/** The device's word breaker for a language (for Thai, with the cut common words joined). */
+function deviceBreaker(code) {
+  const seg = new Intl.Segmenter(code, { granularity: "word" });
+  return code === "th" ? { segment: (text) => joinThai(seg.segment(text)) } : seg;
+}
+
+const WORD_EDGE = /[\p{L}\p{N}\p{M}]/u;
+/** [from, to) of `text`'s part from..to without the punctuation at its ends; null when it has no letters. */
+function wordPart(text, from, to) {
+  while (from < to && !WORD_EDGE.test(text[from])) from++;
+  while (to > from && !WORD_EDGE.test(text[to - 1])) to--;
+  return to > from ? [from, to] : null;
+}
+
+/**
+ * Where the words of `text` (in language `code`) are: [[from, to), ...] in order, without the spaces
+ * and the punctuation round them. Japanese, Chinese and Thai are cut the way the players cut them (a
+ * dictionary's splitter once it is loaded, else the device's word breaker); the other languages at
+ * their spaces, so a word keeps what is written onto it (l'école, الكتاب, 학교에). For holding a word
+ * on a review card.
+ */
+export function wordRanges(text, code) {
+  text = String(text ?? "");
+  const out = [];
+  if (langInfo(code).unspaced) {
+    let parts = null;
+    try {
+      const custom = splitters.get(code);
+      if (custom) parts = custom.split(text);
+      else if (typeof Intl !== "undefined" && Intl.Segmenter) parts = [...deviceBreaker(code).segment(text)];
+    } catch { parts = null; }
+    if (!parts) parts = [...text].map((segment, i, all) => ({ segment, index: all.slice(0, i).join("").length }));  // no word breaker: letter by letter
+    for (const p of parts) {
+      const part = LETTERS.test(p.segment) && wordPart(text, p.index, p.index + p.segment.length);
+      if (part) out.push(part);
+    }
+    return out;
+  }
+  for (const m of text.matchAll(/\S+/gu)) {
+    const part = wordPart(text, m.index, m.index + m[0].length);
+    if (part) out.push(part);
+  }
+  return out;
+}
+
+/**
+ * Japanese, Chinese and Thai: turn the pieces a transcript or page was stored as into real words.
+ *
+ * Speech recognition returns these languages a few characters at a time, and an imported
+ * page arrives as whole unbroken sentences. A dictionary (setWordSplitter above), or until it is
+ * loaded the device's built-in word breaker (Intl.Segmenter), finds the word boundaries; each
+ * word's time is worked out from the pieces it covers, so the highlight and "play this word" still line up. Punctuation stays attached to its word, as in
+ * the other languages.
+ *
+ * W is {start: [], end: [], seg: [], text: []} (parallel lists, one entry per piece).
+ * `across` = true merges neighbouring pieces into words (audio); false only splits pieces (pages,
+ * where the gaps between pieces are real spaces). `segText(seg)` may give a line's original text.
+ */
+export function regroupWords(W, code, across = true, segText = null) {
+  if (code === "fa" && W.text.length) return persianWords(W, across); // (Persian is spaced: letters and half spaces)
+  const custom = splitters.get(code);
+  if (!langInfo(code).unspaced || !W.text.length) return W;
+  if (code === "th") { // transcripts made before the computer wrote ำ as one letter, and the phone's
+    W = { ...W, text: W.text.map(thaiLetters) };
+    if (segText) { const line = segText; segText = (seg) => thaiLetters(line(seg)); }
+  }
+  if (!custom && (typeof Intl === "undefined" || !Intl.Segmenter)) return W;
+  const breaker = custom ? { segment: (text) => custom.split(text) } : deviceBreaker(code);
+  const show = (custom && custom.show) || ((word) => word);
+  const out = { start: [], end: [], seg: [], text: [] };
+  const n = W.text.length;
+  let a = 0;
+  while (a < n) {
+    let b = a;
+    if (across) while (b + 1 < n && W.seg[b + 1] === W.seg[a]) b++;
+    // Every character of the run: which piece it came from and where in that piece.
+    const chars = [];
+    let flat = "";
+    let joined = "";
+    for (let t = a; t <= b; t++) {
+      const piece = String(W.text[t]);
+      for (let k = 0; k < piece.length; k++) {
+        if (/\s/.test(piece[k])) continue;
+        chars.push([t, k, piece.length]);
+        flat += piece[k];
+      }
+      joined += (t > a ? gap(String(W.text[t - 1]), piece, code) : "") + piece;
+    }
+    // The line as originally written keeps real spaces ("New York") and unbroken names ("iPhone").
+    let run = joined;
+    if (across && segText) {
+      const original = String(segText(W.seg[a]) || "");
+      if (original.replace(/\s+/g, "") === flat) run = original;
+    }
+    const owner = [];
+    for (let i = 0, c = 0; i < run.length; i++) owner.push(/\s/.test(run[i]) ? null : chars[c++]);
+    const timeAt = (c, edge) => { // edge 0 = where character c starts, 1 = where it ends
+      const [t, k, len] = owner[c];
+      return W.start[t] + (W.end[t] - W.start[t]) * ((k + edge) / len);
+    };
+    const words = []; // [first character, last character] of each word
+    let pendingFrom = -1; // opening punctuation waiting for the word it belongs to
+    for (const part of breaker.segment(run)) {
+      const text = part.segment;
+      if (!text.trim()) continue;
+      const first = part.index;
+      const last = part.index + text.length - 1;
+      if (LETTERS.test(text)) {
+        words.push([pendingFrom >= 0 ? pendingFrom : first, last]);
+        pendingFrom = -1;
+      } else if (OPENERS.test(text) || !words.length) {
+        if (pendingFrom < 0) pendingFrom = first;
+      } else {
+        words[words.length - 1][1] = last; // closing punctuation joins the word before it
+      }
+    }
+    if (pendingFrom >= 0) { // punctuation with no word after it
+      if (words.length) words[words.length - 1][1] = run.length - 1;
+      else words.push([pendingFrom, run.length - 1]);
+    }
+    for (const [first, last] of words) {
+      let f = first;
+      let l = last;
+      while (owner[f] === null) f++;
+      while (owner[l] === null) l--;
+      // Thai writes a space between phrases (where English has a comma or full stop): it stays with
+      // the word before it, so the text still reads in phrases. (Lookups take spaces off a word's ends.)
+      const pieceEnd = !across && last === run.length - 1 && b + 1 < n && W.seg[b + 1] === W.seg[a]; // (a page's pieces are its spaced parts)
+      const phraseEnd = code === "th" && (/\s/.test(run[last + 1] || "") || pieceEnd);
+      out.text.push(show(run.slice(f, l + 1)) + (phraseEnd ? " " : ""));
+      out.start.push(timeAt(f, 0));
+      out.end.push(timeAt(l, 1));
+      out.seg.push(W.seg[a]);
+    }
+    a = b + 1;
+  }
+  return out;
+}

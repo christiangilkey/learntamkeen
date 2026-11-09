@@ -1,0 +1,135 @@
+[
+ {
+  "name": "Tamkeen",
+  "license": "MIT",
+  "file": "app.txt"
+ },
+ {
+  "name": "Noto Naskh Arabic font",
+  "license": "SIL Open Font License 1.1",
+  "file": "noto-naskh-arabic.txt"
+ },
+ {
+  "name": "Common-word lists (from wordfreq)",
+  "license": "CC BY-SA 4.0",
+  "file": "wordfreq.txt"
+ },
+ {
+  "name": "CAMeL Tools analyzer method; Arabic dictionaries (optional download)",
+  "license": "MIT; GPL v2 / CC BY 4.0",
+  "file": "camel-tools.txt"
+ },
+ {
+  "name": "Spanish, French, Italian, Portuguese, Catalan and English word tables (optional download)",
+  "license": "ODbL 1.0",
+  "file": "lemmatization-lists.txt"
+ },
+ {
+  "name": "Bisaya word list (OPUS NLLB) and Wolff's Dictionary of Cebuano Visayan (optional download)",
+  "license": "ODC-By 1.0; public domain",
+  "file": "cebuano-sources.txt"
+ },
+ {
+  "name": "Thai common-word list, from PyThaiNLP's Thai National Corpus counts",
+  "license": "CC0 1.0",
+  "file": "pythainlp.txt"
+ },
+ {
+  "name": "Hindi word table, meanings and readings, from Wiktionary and wordfreq (optional download)",
+  "license": "CC BY-SA 4.0",
+  "file": "hindi-sources.txt"
+ },
+ {
+  "name": "CMU Pronouncing Dictionary: US pronunciations in the English word table",
+  "license": "BSD-style",
+  "file": "cmudict.txt"
+ },
+ {
+  "name": "Russian word table with stress, from OpenRussian.org (optional download)",
+  "license": "CC BY-SA 4.0",
+  "file": "openrussian.txt"
+ },
+ {
+  "name": "The IPADIC dictionary and kuromoji: Japanese words and furigana (optional download)",
+  "license": "Apache 2.0 / MIT / NAIST",
+  "file": "kuromoji.txt"
+ },
+ {
+  "name": "CC-CEDICT and wordfreq: Chinese words and pinyin (optional download)",
+  "license": "CC BY-SA 4.0",
+  "file": "cc-cedict.txt"
+ },
+ {
+  "name": "Wiktionary via Wiktextract: word meanings for No AI (optional download)",
+  "license": "CC BY-SA 4.0",
+  "file": "wiktionary.txt"
+ },
+ {
+  "name": "Tatoeba, Wiktionary, WordNet, GloVe and FrequencyWords: example sentences and the free Mnemonic maker (optional download)",
+  "license": "CC BY 2.0 FR; CC BY-SA 4.0; WordNet licence; PDDL 1.0",
+  "file": "card-helpers.txt"
+ },
+ {
+  "name": "PDF.js (Mozilla): reading PDF books you add",
+  "license": "Apache 2.0",
+  "file": "pdfjs.txt"
+ },
+ {
+  "name": "Tesseract.js and Tesseract OCR with its language data: reading words in a photo on the device (optional download)",
+  "license": "Apache 2.0",
+  "file": "tesseract.txt"
+ },
+ {
+  "name": "The free book shelf: Project Gutenberg, Wikisource, Aozora Bunko (optional download)",
+  "license": "Public domain",
+  "file": "free-books.txt"
+ },
+ {
+  "name": "Supabase JS client: Friends, chat and sharing",
+  "license": "MIT",
+  "file": "supabase-js.txt"
+ },
+ {
+  "name": "Capacitor: the phone apps' frame around Tamkeen's screens",
+  "license": "MIT",
+  "file": "capacitor.txt",
+  "on": [
+   "phone"
+  ]
+ },
+ {
+  "name": "German word table and common-word list: today's spelling and capitals, from Wiktionary (optional download)",
+  "license": "ODbL 1.0; CC BY-SA 4.0",
+  "file": "german-sources.txt"
+ },
+ {
+  "name": "Vazirmatn font (Persian)",
+  "license": "SIL Open Font License 1.1",
+  "file": "vazirmatn.txt"
+ },
+ {
+  "name": "Figtree font (the app's text)",
+  "license": "SIL Open Font License 1.1",
+  "file": "figtree.txt"
+ },
+ {
+  "name": "Rubik font (headings and numbers)",
+  "license": "SIL Open Font License 1.1",
+  "file": "rubik.txt"
+ },
+ {
+  "name": "Korean word list and common words, from Wiktionary and OpenSubtitles counts (optional download)",
+  "license": "CC BY-SA 4.0",
+  "file": "korean-sources.txt"
+ },
+ {
+  "name": "Latin word forms and common words, from Wiktionary and Project Gutenberg counts (optional download)",
+  "license": "CC BY-SA 4.0",
+  "file": "latin-sources.txt"
+ },
+ {
+  "name": "Tagalog roots and verb forms, from Wiktionary and UD_Tagalog-NewsCrawl (optional download)",
+  "license": "CC BY-SA 4.0",
+  "file": "tagalog-sources.txt"
+ }
+]
